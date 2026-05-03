@@ -1,0 +1,16 @@
+/* Append to layout.css */
+.tool-button svg {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  flex-shrink: 0 !important;
+  stroke: var(--text-main) !important;
+  fill: none !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+.tool-button.active svg {
+  stroke: var(--accent) !important;
+}
