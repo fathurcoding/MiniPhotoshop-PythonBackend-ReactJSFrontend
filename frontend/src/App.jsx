@@ -191,8 +191,11 @@ function App() {
           }
           resultBlob = tempBlob;
           break;
+        case 'threshold': resultBlob = await api.applyThreshold(currentImage, params); break;
         case 'grayscale': resultBlob = await api.applyGrayscale(currentImage); break;
-        case 'sobel': resultBlob = await api.applySobel(currentImage); break;
+        case 'edge': resultBlob = await api.applyEdge(currentImage, params); break;
+        case 'erosion': resultBlob = await api.applyErosion(currentImage, params); break;
+        case 'dilation': resultBlob = await api.applyDilation(currentImage, params); break;
         case 'resize': 
           const resizeRes = await api.applyResize(currentImage, params); 
           resultBlob = resizeRes.blob; shiftX = resizeRes.shiftX; shiftY = resizeRes.shiftY;

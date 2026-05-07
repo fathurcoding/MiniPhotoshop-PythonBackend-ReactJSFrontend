@@ -22,10 +22,44 @@ export const applyGrayscale = async (file) => {
   return res.data;
 };
 
-export const applySobel = async (file) => {
+export const applyThreshold = async (file, params) => {
   const formData = new FormData();
   formData.append('file', file);
-  const res = await axios.post(`${BASE_URL}/edge/sobel`, formData, { responseType: 'blob' });
+  formData.append('threshold_value', params.value);
+  formData.append('method', params.method || 'manual');
+  const res = await axios.post(`${BASE_URL}/enhancement/threshold`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applyEdge = async (file, params) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('method', params.method);
+  if (params.threshold1) formData.append('threshold1', params.threshold1);
+  if (params.threshold2) formData.append('threshold2', params.threshold2);
+  if (params.ksize) formData.append('ksize', params.ksize);
+  if (params.sigma) formData.append('sigma', params.sigma);
+  const res = await axios.post(`${BASE_URL}/edge/apply`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applyErosion = async (file, params) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('kernel_size', params.kernelSize || 3);
+  formData.append('shape', params.shape || 'rect');
+  formData.append('iterations', params.iterations || 1);
+  const res = await axios.post(`${BASE_URL}/morphology/erosion`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applyDilation = async (file, params) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('kernel_size', params.kernelSize || 3);
+  formData.append('shape', params.shape || 'rect');
+  formData.append('iterations', params.iterations || 1);
+  const res = await axios.post(`${BASE_URL}/morphology/dilation`, formData, { responseType: 'blob' });
   return res.data;
 };
 

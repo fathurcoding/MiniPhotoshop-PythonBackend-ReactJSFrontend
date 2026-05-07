@@ -68,7 +68,17 @@ function Sidebar({
   const [brightness, setBrightness] = useState(0);
   const [contrast, setContrast] = useState(0);
   const [threshold, setThreshold] = useState(128);
+  const [isOtsu, setIsOtsu] = useState(false);
   const [edgeMethod, setEdgeMethod] = useState('sobel');
+  const [edgeThreshold1, setEdgeThreshold1] = useState(100);
+  const [edgeThreshold2, setEdgeThreshold2] = useState(200);
+  const [edgeKSize, setEdgeKSize] = useState(3);
+  const [edgeSigma, setEdgeSigma] = useState(1.0);
+
+  // Morphology State
+  const [morphSize, setMorphSize] = useState(3);
+  const [morphShape, setMorphShape] = useState('rect');
+  const [morphIterations, setMorphIterations] = useState(1);
 
   // Sync local sliders with preview updates
   const updateBrightness = (val) => {
@@ -183,39 +193,136 @@ function Sidebar({
 
       {/* 5. Binary & Edge */}
       <Accordion title="Edge & Binary" icon={<Contrast size={14}/>}>
-        <div className="control-group">
+        {/* 1. Thresholding */}
+        <div className="control-group" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
           <div className="control-label">
-            <span>Threshold</span> 
-            <input 
-              type="number" 
-              className="value-input" 
-              value={threshold} 
+            <span>Thresholding</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <label style={{ fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                <input type="checkbox" checked={isOtsu} onChange={e => setIsOtsu(e.target.checked)} />
+                Otsu
+              </label>
+              {!isOtsu && (
+                <input 
+                  type="number" 
+                  className="value-input" 
+                  value={threshold} 
+                  onChange={e => setThreshold(e.target.value)}
+                  disabled={!hasImage}
+                />
+              )}
+            </div>
+          </div>
+          {!isOtsu && (
+            <input type="range" className="range-slider" min="0" max="255" value={threshold} 
               onChange={e => setThreshold(e.target.value)}
-              onBlur={() => onAction('threshold', { value: threshold })}
-              onKeyDown={e => e.key === 'Enter' && onAction('threshold', { value: threshold })}
               disabled={!hasImage}
             />
-          </div>
-          <input type="range" className="range-slider" min="0" max="255" value={threshold} 
-            onChange={e => setThreshold(e.target.value)}
-            onMouseUp={() => onAction('threshold', { value: threshold })}
+          )}
+          <button 
+            className="primary-sm" 
+            style={{ width: '100%', marginTop: '0.5rem' }}
+            onClick={() => onAction('threshold', { value: threshold, method: isOtsu ? 'otsu' : 'manual' })}
             disabled={!hasImage}
-          />
+          >
+            Apply Threshold
+          </button>
         </div>
-        <div className="control-group" style={{ marginTop: '0.5rem' }}>
-          <select className="select-input" value={edgeMethod} onChange={e => setEdgeMethod(e.target.value)}>
-            <option value="sobel">Sobel Edge</option>
-            <option value="canny">Canny Edge</option>
-            <option value="prewitt">Prewitt Edge</option>
-            <option value="robert">Robert Edge</option>
-            <option value="laplacian">Laplacian</option>
-            <option value="log">Laplacian of Gaussian</option>
-          </select>
-          <button onClick={() => onAction('edge', { method: edgeMethod })} disabled={!hasImage}>Apply Edge Detection</button>
+
+        {/* 2. Edge Detection */}
+        <div className="control-group" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
+          <div className="control-label">
+            <span>Edge Method</span>
+            <select className="select-input" value={edgeMethod} onChange={e => setEdgeMethod(e.target.value)} style={{ width: '120px' }}>
+              <option value="sobel">Sobel</option>
+              <option value="canny">Canny</option>
+              <option value="prewitt">Prewitt</option>
+              <option value="robert">Robert</option>
+              <option value="laplacian">Laplacian</option>
+              <option value="log">LoG</option>
+            </select>
+          </div>
+
+          {edgeMethod === 'canny' && (
+            <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div className="control-label">
+                <span style={{ fontSize: '11px' }}>T1</span>
+                <input type="number" className="value-input" value={edgeThreshold1} onChange={e => setEdgeThreshold1(e.target.value)} />
+              </div>
+              <input type="range" className="range-slider" min="0" max="500" value={edgeThreshold1} onChange={e => setEdgeThreshold1(e.target.value)} />
+              <div className="control-label">
+                <span style={{ fontSize: '11px' }}>T2</span>
+                <input type="number" className="value-input" value={edgeThreshold2} onChange={e => setEdgeThreshold2(e.target.value)} />
+              </div>
+              <input type="range" className="range-slider" min="0" max="500" value={edgeThreshold2} onChange={e => setEdgeThreshold2(e.target.value)} />
+            </div>
+          )}
+
+          {(edgeMethod === 'sobel' || edgeMethod === 'laplacian' || edgeMethod === 'log') && (
+            <div className="control-label" style={{ marginTop: '0.5rem' }}>
+              <span style={{ fontSize: '11px' }}>Kernel Size</span>
+              <select className="select-input" value={edgeKSize} onChange={e => setEdgeKSize(e.target.value)} style={{ width: '60px' }}>
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="7">7</option>
+              </select>
+            </div>
+          )}
+
+          {edgeMethod === 'log' && (
+            <div style={{ marginTop: '0.5rem' }}>
+              <div className="control-label">
+                <span style={{ fontSize: '11px' }}>Sigma</span>
+                <input type="number" step="0.1" className="value-input" value={edgeSigma} onChange={e => setEdgeSigma(e.target.value)} />
+              </div>
+              <input type="range" className="range-slider" min="0.1" max="5" step="0.1" value={edgeSigma} onChange={e => setEdgeSigma(e.target.value)} />
+            </div>
+          )}
+
+          <button 
+            className="primary-sm" 
+            style={{ width: '100%', marginTop: '0.5rem' }}
+            onClick={() => onAction('edge', { 
+              method: edgeMethod, 
+              threshold1: edgeThreshold1, 
+              threshold2: edgeThreshold2,
+              ksize: edgeKSize,
+              sigma: edgeSigma
+            })} 
+            disabled={!hasImage}
+          >
+            Apply Edge Detection
+          </button>
         </div>
-        <div className="button-group-row" style={{ marginTop: '0.5rem' }}>
-          <button onClick={() => onAction('erosion')} disabled={!hasImage}>Erosion</button>
-          <button onClick={() => onAction('dilation')} disabled={!hasImage}>Dilation</button>
+
+        {/* 3. Morphology */}
+        <div className="control-group">
+          <div className="control-label">
+            <span>Morphology</span>
+            <select className="select-input" value={morphShape} onChange={e => setMorphShape(e.target.value)} style={{ width: '90px' }}>
+              <option value="rect">Rect</option>
+              <option value="cross">Cross</option>
+              <option value="ellipse">Ellipse</option>
+            </select>
+          </div>
+          
+          <div className="control-label" style={{ marginTop: '0.5rem' }}>
+            <span style={{ fontSize: '11px' }}>Size</span>
+            <input type="number" className="value-input" value={morphSize} onChange={e => setMorphSize(e.target.value)} />
+          </div>
+          <input type="range" className="range-slider" min="1" max="21" step="2" value={morphSize} onChange={e => setMorphSize(e.target.value)} />
+
+          <div className="control-label" style={{ marginTop: '0.5rem' }}>
+            <span style={{ fontSize: '11px' }}>Iterations</span>
+            <input type="number" className="value-input" value={morphIterations} onChange={e => setMorphIterations(e.target.value)} />
+          </div>
+          <input type="range" className="range-slider" min="1" max="10" value={morphIterations} onChange={e => setMorphIterations(e.target.value)} />
+
+          <div className="button-group-row" style={{ marginTop: '0.5rem' }}>
+            <button style={{ flex: 1 }} onClick={() => onAction('erosion', { kernelSize: morphSize, shape: morphShape, iterations: morphIterations })} disabled={!hasImage}>Erosion</button>
+            <button style={{ flex: 1 }} onClick={() => onAction('dilation', { kernelSize: morphSize, shape: morphShape, iterations: morphIterations })} disabled={!hasImage}>Dilation</button>
+          </div>
         </div>
       </Accordion>
 

@@ -1,6 +1,12 @@
-# Layer: Features - Edge Detection
-# Purpose: Canny edge detection.
+import cv2
 
-def apply(image, **kwargs):
+
+def apply(image, threshold1=100, threshold2=200, **kwargs):
     """Apply Canny edge detection to the image."""
-    raise NotImplementedError("Feature not implemented yet")
+    if len(image.shape) == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
+
+    edges = cv2.Canny(gray, float(threshold1), float(threshold2))
+    return edges
