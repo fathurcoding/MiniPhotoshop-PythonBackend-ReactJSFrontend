@@ -1,1 +1,1 @@
-from . import brightness, contrast, histogram_eq, threshold
+from . import brightness, contrast, histogram_eq, threshold, sharpen, smoothing

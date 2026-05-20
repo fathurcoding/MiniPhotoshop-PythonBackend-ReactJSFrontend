@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from fastapi import APIRouter, UploadFile, File, Form
 from fastapi.responses import Response
-from backend.features.enhancement import brightness, contrast, histogram_eq, threshold
+from backend.features.enhancement import brightness, contrast, histogram_eq, threshold, sharpen, smoothing
 
 router = APIRouter()
 
@@ -22,12 +22,28 @@ def process_enhanced_image(file_bytes, func, **kwargs):
 
 @router.post("/brightness")
 async def apply_brightness(file: UploadFile = File(...), value: float = Form(...)):
-    # Placeholder implementation if needed, but keeping existing logic structure
-    return {"message": "Brightness functionality implementation required"}
+    file_bytes = await file.read()
+    return process_enhanced_image(file_bytes, brightness.apply, brightness_value=value)
 
 @router.post("/contrast")
 async def apply_contrast(file: UploadFile = File(...), value: float = Form(...)):
-    return {"message": "Contrast functionality implementation required"}
+    file_bytes = await file.read()
+    return process_enhanced_image(file_bytes, contrast.apply, contrast_value=value)
+
+@router.post("/histogram_eq")
+async def apply_histogram_eq(file: UploadFile = File(...)):
+    file_bytes = await file.read()
+    return process_enhanced_image(file_bytes, histogram_eq.apply)
+
+@router.post("/sharpen")
+async def apply_sharpen(file: UploadFile = File(...)):
+    file_bytes = await file.read()
+    return process_enhanced_image(file_bytes, sharpen.apply)
+
+@router.post("/smoothing")
+async def apply_smoothing(file: UploadFile = File(...), kernel_size: float = Form(5)):
+    file_bytes = await file.read()
+    return process_enhanced_image(file_bytes, smoothing.apply, kernel_size=kernel_size)
 
 @router.post("/threshold")
 async def apply_threshold(
@@ -37,7 +53,3 @@ async def apply_threshold(
 ):
     file_bytes = await file.read()
     return process_enhanced_image(file_bytes, threshold.apply, threshold_value=threshold_value, method=method)
-
-@router.post("/histogram_eq")
-async def apply_histogram_eq(file: UploadFile = File(...)):
-    return {"message": "Histogram equalization functionality implementation required"}
