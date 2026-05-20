@@ -196,6 +196,9 @@ function App() {
         case 'edge': resultBlob = await api.applyEdge(currentImage, params); break;
         case 'erosion': resultBlob = await api.applyErosion(currentImage, params); break;
         case 'dilation': resultBlob = await api.applyDilation(currentImage, params); break;
+        case 'segment_threshold': resultBlob = await api.applySegmentThreshold(currentImage); break;
+        case 'segment_edge': resultBlob = await api.applySegmentEdge(currentImage); break;
+        case 'segment_region': resultBlob = await api.applySegmentRegion(currentImage, params); break;
         case 'resize': 
           const resizeRes = await api.applyResize(currentImage, params); 
           resultBlob = resizeRes.blob; shiftX = resizeRes.shiftX; shiftY = resizeRes.shiftY;

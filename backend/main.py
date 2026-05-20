@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routes import enhancement, transform, filtering, edge, compression, analysis, morphology
+from backend.routes import enhancement, transform, filtering, edge, compression, analysis, morphology, segmentation
 
 app = FastAPI(title="Image Processing API", description="Modular FastAPI application for Image Processing", version="1.0.0")
 
@@ -21,6 +21,7 @@ app.include_router(edge.router, prefix="/edge", tags=["Edge Detection"])
 app.include_router(compression.router, prefix="/compression", tags=["Compression"])
 app.include_router(analysis.router, prefix="/analysis", tags=["Analysis"])
 app.include_router(morphology.router, prefix="/morphology", tags=["Morphology"])
+app.include_router(segmentation.router, prefix="/segmentation", tags=["Segmentation"])
 
 @app.get("/")
 def root():

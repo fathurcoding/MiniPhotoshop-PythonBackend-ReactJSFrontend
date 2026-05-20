@@ -158,3 +158,29 @@ export const applyCompression = async (file, params) => {
     compressionRatio: parseFloat(res.headers['x-compression-ratio']) || 0
   };
 };
+
+// --- Segmentation ---
+
+export const applySegmentThreshold = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await axios.post(`${BASE_URL}/segmentation/threshold`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applySegmentEdge = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await axios.post(`${BASE_URL}/segmentation/edge`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applySegmentRegion = async (file, params) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  if (params.k) {
+    formData.append('k', params.k);
+  }
+  const res = await axios.post(`${BASE_URL}/segmentation/region`, formData, { responseType: 'blob' });
+  return res.data;
+};

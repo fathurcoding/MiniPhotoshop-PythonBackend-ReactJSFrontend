@@ -80,6 +80,9 @@ function Sidebar({
   const [morphShape, setMorphShape] = useState('rect');
   const [morphIterations, setMorphIterations] = useState(1);
 
+  // Segmentation State
+  const [segmentK, setSegmentK] = useState(3);
+
   // Sync local sliders with preview updates
   const updateBrightness = (val) => {
     setBrightness(val);
@@ -338,9 +341,55 @@ function Sidebar({
 
       {/* 7. Segmentation */}
       <Accordion title="Segmentation" icon={<Grid size={14}/>}>
-        <button onClick={() => onAction('segment_threshold')} disabled={!hasImage}>Threshold Based</button>
-        <button onClick={() => onAction('segment_edge')} disabled={!hasImage}>Edge Based</button>
-        <button onClick={() => onAction('segment_region')} disabled={!hasImage}>Region Based</button>
+        <div className="control-group" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
+          <button 
+            className="primary-sm" 
+            style={{ width: '100%', marginBottom: '0.5rem' }}
+            onClick={() => onAction('segment_threshold')} 
+            disabled={!hasImage}
+          >
+            Threshold Based (Otsu Masking)
+          </button>
+          
+          <button 
+            className="primary-sm" 
+            style={{ width: '100%' }}
+            onClick={() => onAction('segment_edge')} 
+            disabled={!hasImage}
+          >
+            Edge Based (Canny Contour)
+          </button>
+        </div>
+
+        <div className="control-group">
+          <div className="control-label">
+            <span>Region Based (Clustering)</span>
+            <input 
+              type="number" 
+              className="value-input" 
+              value={segmentK} 
+              onChange={e => setSegmentK(e.target.value)}
+              disabled={!hasImage}
+            />
+          </div>
+          <div className="control-label" style={{ marginTop: '0.5rem' }}>
+            <span style={{ fontSize: '11px' }}>K (Clusters)</span>
+          </div>
+          <input 
+            type="range" className="range-slider" 
+            min="2" max="16" value={segmentK} 
+            onChange={e => setSegmentK(e.target.value)}
+            disabled={!hasImage}
+          />
+          <button 
+            className="primary-sm" 
+            style={{ width: '100%', marginTop: '0.5rem' }}
+            onClick={() => onAction('segment_region', { k: segmentK })} 
+            disabled={!hasImage}
+          >
+            Apply Region Segmentation
+          </button>
+        </div>
       </Accordion>
 
       {/* 8. Export & Compression */}
