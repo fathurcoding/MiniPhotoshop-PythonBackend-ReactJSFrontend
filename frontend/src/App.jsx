@@ -177,31 +177,84 @@ function App() {
     try {
       let resultBlob;
       let shiftX = 0, shiftY = 0;
-      // Map to real backend APIs. For now, using placeholders from the old scaffold.
+      
       switch (actionType) {
-        case 'brightness': resultBlob = await api.applyBrightness(currentImage, params); break;
-        case 'contrast': resultBlob = await api.applyContrast(currentImage, params); break;
+        // --- 2. Image Enhancement ---
+        case 'brightness': 
+          resultBlob = await api.applyBrightness(currentImage, params.value !== undefined ? params.value : params); 
+          break;
+        case 'contrast': 
+          resultBlob = await api.applyContrast(currentImage, params.value !== undefined ? params.value : params); 
+          break;
+        case 'hist_eq': 
+          resultBlob = await api.applyHistogramEq(currentImage); 
+          break;
+        case 'sharpen': 
+          resultBlob = await api.applySharpen(currentImage); 
+          break;
+        case 'smoothing': 
+          // Disesuaikan agar membaca params.kernelSize dari Sidebar baru
+          const smoothK = params.kernelSize !== undefined ? params.kernelSize : (params.kernel_size !== undefined ? params.kernel_size : params);
+          resultBlob = await api.applySmoothing(currentImage, smoothK); 
+          break;
         case 'apply_enhancements':
           let tempBlob = currentImage;
           if (params.brightness !== 0) {
-            tempBlob = await api.applyBrightness(tempBlob, { value: params.brightness });
+            tempBlob = await api.applyBrightness(tempBlob, params.brightness);
           }
           if (params.contrast !== 0) {
-            tempBlob = await api.applyContrast(tempBlob, { value: params.contrast });
+            tempBlob = await api.applyContrast(tempBlob, params.contrast);
           }
           resultBlob = tempBlob;
           break;
-        case 'threshold': resultBlob = await api.applyThreshold(currentImage, params); break;
-        case 'grayscale': resultBlob = await api.applyGrayscale(currentImage); break;
+        case 'threshold': 
+          resultBlob = await api.applyThreshold(currentImage, params); 
+          break;
+
+        // --- 4. Image Restoration (Filtering) ---
+        case 'gaussian_blur': 
+          // Disesuaikan dengan penamaan objek kernelSize di Sidebar baru
+          const gKSize = params.kernelSize || params.kernel_size || 5;
+          resultBlob = await api.applyGaussianBlur(currentImage, gKSize, params.sigma || 1.0); 
+          break;
+        case 'median_filter': 
+          // Disesuaikan dengan penamaan objek kernelSize di Sidebar baru
+          const mKSize = params.kernelSize || params.kernel_size || 5;
+          resultBlob = await api.applyMedianFilter(currentImage, mKSize); 
+          break;
+        case 'noise_removal': 
+          resultBlob = await api.applyNoiseRemoval(currentImage); 
+          break;
+
+        // --- 5. Edge & Morphology ---
         case 'edge': resultBlob = await api.applyEdge(currentImage, params); break;
         case 'erosion': resultBlob = await api.applyErosion(currentImage, params); break;
         case 'dilation': resultBlob = await api.applyDilation(currentImage, params); break;
+
+        // --- 6. Color Processing & Analysis ---
+        case 'grayscale': 
+          resultBlob = await api.applyGrayscale(currentImage); 
+          break;
+        case 'channel': 
+        case 'channel_split': 
+          const targetChannel = params.c || params.channel || 'R';
+          resultBlob = await api.applyChannelSplit(currentImage, targetChannel.toUpperCase()); 
+          break;
+        case 'color_adjust':
+        case 'color_adjustment': 
+          const hShift = params.hue !== undefined ? params.hue : (params.hue_shift || 0);
+          const sScale = params.saturation !== undefined ? params.saturation : (params.saturation_scale || 1.0);
+          resultBlob = await api.applyColorAdjustment(currentImage, hShift, sScale); 
+          break;
+
+        // --- 7. Segmentation ---
         case 'segment_threshold': resultBlob = await api.applySegmentThreshold(currentImage); break;
         case 'segment_edge': resultBlob = await api.applySegmentEdge(currentImage); break;
         case 'segment_region': resultBlob = await api.applySegmentRegion(currentImage, params); break;
+        
+        // --- 3. Geometric Transform ---
         case 'resize': 
           const resizeRes = await api.applyResize(currentImage, params); 
-          resultBlob = resizeRes.blob; shiftX = resizeRes.shiftX; shiftY = resizeRes.shiftY;
           break;
         case 'rotate': 
           const rotRes = await api.applyRotate(currentImage, params); 
@@ -281,6 +334,7 @@ function App() {
           showEnhancementPreview={showEnhancementPreview}
           isLoading={isLoading}
         />
+        {/* Sesuai dengan instruksi, RightPanel sekarang fokus murni pada Analisis Histogram */}
         <RightPanel 
           histogramOriginal={histogramOriginal}
           histogramCurrent={histogramCurrent} 

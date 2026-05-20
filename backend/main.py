@@ -26,3 +26,8 @@ app.include_router(segmentation.router, prefix="/segmentation", tags=["Segmentat
 @app.get("/")
 def root():
     return {"message": "Welcome to the Image Processing API"}
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)

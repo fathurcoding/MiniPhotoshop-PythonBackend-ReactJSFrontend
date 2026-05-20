@@ -6,19 +6,43 @@ export const uploadImage = async (file) => {
   return file;
 };
 
-// --- Enhancement & Edge ---
+// --- 2. Image Enhancement ---
 
-export const applyBrightness = async (file) => {
+export const applyBrightness = async (file, value) => {
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('value', value); // Kirim nilai slider brightness ke backend
   const res = await axios.post(`${BASE_URL}/enhancement/brightness`, formData, { responseType: 'blob' });
   return res.data;
 };
 
-export const applyGrayscale = async (file) => {
+export const applyContrast = async (file, value) => {
   const formData = new FormData();
   formData.append('file', file);
-  const res = await axios.post(`${BASE_URL}/enhancement/grayscale`, formData, { responseType: 'blob' });
+  formData.append('value', value); // Kirim nilai slider contrast ke backend
+  const res = await axios.post(`${BASE_URL}/enhancement/contrast`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applyHistogramEq = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await axios.post(`${BASE_URL}/enhancement/histogram_eq`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applySharpen = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await axios.post(`${BASE_URL}/enhancement/sharpen`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applySmoothing = async (file, kernelSize) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('kernel_size', kernelSize); // Kirim parameter ukuran blur
+  const res = await axios.post(`${BASE_URL}/enhancement/smoothing`, formData, { responseType: 'blob' });
   return res.data;
 };
 
@@ -30,6 +54,34 @@ export const applyThreshold = async (file, params) => {
   const res = await axios.post(`${BASE_URL}/enhancement/threshold`, formData, { responseType: 'blob' });
   return res.data;
 };
+
+// --- 4. Image Restoration (Filtering) ---
+
+export const applyGaussianBlur = async (file, kernelSize, sigma = 1.0) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('kernel_size', kernelSize);
+  formData.append('sigma', sigma);
+  const res = await axios.post(`${BASE_URL}/filtering/gaussian`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applyMedianFilter = async (file, kernelSize) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('kernel_size', kernelSize);
+  const res = await axios.post(`${BASE_URL}/filtering/median`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applyNoiseRemoval = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await axios.post(`${BASE_URL}/filtering/noise_removal`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+// --- 5. Edge Processing ---
 
 export const applyEdge = async (file, params) => {
   const formData = new FormData();
@@ -63,7 +115,41 @@ export const applyDilation = async (file, params) => {
   return res.data;
 };
 
-// --- Transform ---
+// --- 6. Color Processing & Analysis ---
+
+export const applyGrayscale = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const res = await axios.post(`${BASE_URL}/analysis/grayscale`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applyChannelSplit = async (file, channel) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('channel', channel); // 'R', 'G', atau 'B'
+  const res = await axios.post(`${BASE_URL}/analysis/channel_split`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const applyColorAdjustment = async (file, hueShift, saturationScale) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('hue_shift', hueShift);
+  formData.append('saturation_scale', saturationScale);
+  const res = await axios.post(`${BASE_URL}/analysis/color_adjustment`, formData, { responseType: 'blob' });
+  return res.data;
+};
+
+export const getHistogram = async (file, mode = "grayscale") => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await axios.post(`${BASE_URL}/analysis/histogram?mode=${mode}`, formData);
+  return res.data;
+};
+
+// --- Geometric Transform ---
 
 export const applyResize = async (file, params) => {
   const formData = new FormData();
@@ -126,15 +212,6 @@ export const applyTranslate = async (file, params) => {
     shiftX: Number(res.headers['x-shift-x']) || 0,
     shiftY: Number(res.headers['x-shift-y']) || 0
   };
-};
-
-// --- Analysis ---
-
-export const getHistogram = async (file, mode = "grayscale") => {
-  const formData = new FormData();
-  formData.append('file', file);
-  const res = await axios.post(`${BASE_URL}/analysis/histogram?mode=${mode}`, formData);
-  return res.data;
 };
 
 // --- Compression ---
