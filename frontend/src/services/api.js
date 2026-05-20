@@ -136,3 +136,25 @@ export const getHistogram = async (file, mode = "grayscale") => {
   const res = await axios.post(`${BASE_URL}/analysis/histogram?mode=${mode}`, formData);
   return res.data;
 };
+
+// --- Compression ---
+
+export const applyCompression = async (file, params) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('method', params.method);
+  if (params.quality) {
+    formData.append('quality', params.quality);
+  }
+  
+  const res = await axios.post(`${BASE_URL}/compression/apply`, formData, { 
+    responseType: 'blob' 
+  });
+  
+  return {
+    blob: res.data,
+    originalSize: parseInt(res.headers['x-original-size'], 10) || 0,
+    compressedSize: parseInt(res.headers['x-compressed-size'], 10) || 0,
+    compressionRatio: parseFloat(res.headers['x-compression-ratio']) || 0
+  };
+};
