@@ -9,15 +9,23 @@ def apply(image, target_channel='R', **kwargs):
     if len(image.shape) != 3:
         return image # Gambar sudah grayscale, tidak bisa displit
         
-    b, g, r = cv2.split(image)
-    blank = np.zeros_like(b)
-    
-    # Manipulasi channel array untuk menampilkan warna visual aslinya
-    if target_channel == 'R':
-        return cv2.merge([blank, blank, r])
-    elif target_channel == 'G':
-        return cv2.merge([blank, g, blank])
-    elif target_channel == 'B':
-        return cv2.merge([b, blank, blank])
+    channels = cv2.split(image)
+    if len(channels) >= 3:
+        b, g, r = channels[0], channels[1], channels[2]
+        blank = np.zeros_like(b)
         
+        # Manipulasi channel array untuk menampilkan warna visual aslinya
+        if target_channel == 'R':
+            color_channels = [blank, blank, r]
+        elif target_channel == 'G':
+            color_channels = [blank, g, blank]
+        elif target_channel == 'B':
+            color_channels = [b, blank, blank]
+        else:
+            return image
+            
+        if len(channels) == 4:
+            color_channels.append(channels[3]) # Keep alpha channel intact
+            
+        return cv2.merge(color_channels)
     return image

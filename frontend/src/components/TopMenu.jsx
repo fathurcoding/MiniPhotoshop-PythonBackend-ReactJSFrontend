@@ -88,7 +88,7 @@ function TopMenu({ onUndo, canUndo, onRedo, canRedo, onOpenModal, onAction, onEx
               <div className="dropdown-item" onClick={() => handleMenuClick(() => onOpenModal('noise_removal', 'Noise Removal'))}>Noise Removal...</div>
               <div className="dropdown-divider"></div>
               <div className="dropdown-item" onClick={() => handleMenuClick(() => onAction('sharpen'))}>Sharpen</div>
-              <div className="dropdown-item" onClick={() => handleMenuClick(() => onAction('smooth'))}>Smooth</div>
+              <div className="dropdown-item" onClick={() => handleMenuClick(() => onOpenModal('smoothing', 'Smoothing'))}>Smooth...</div>
             </div>
           )}
         </div>

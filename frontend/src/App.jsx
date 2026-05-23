@@ -255,6 +255,7 @@ function App() {
         // --- 3. Geometric Transform ---
         case 'resize': 
           const resizeRes = await api.applyResize(currentImage, params); 
+          resultBlob = resizeRes.blob; shiftX = resizeRes.shiftX; shiftY = resizeRes.shiftY;
           break;
         case 'rotate': 
           const rotRes = await api.applyRotate(currentImage, params); 

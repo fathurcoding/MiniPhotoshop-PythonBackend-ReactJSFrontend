@@ -11,8 +11,8 @@ function ActionModal({ modalConfig, onApply, onCancel, isLoading }) {
       setValues({ width: modalConfig.currentWidth || 800, height: modalConfig.currentHeight || 500 });
     } else if (modalConfig?.id === 'rotate') {
       setValues({ degree: 0 });
-    } else if (['gaussian_blur', 'median_filter'].includes(modalConfig?.id)) {
-      setValues({ kernel: 3 });
+    } else if (['gaussian_blur', 'median_filter', 'smoothing'].includes(modalConfig?.id)) {
+      setValues({ kernelSize: 3 });
     }
   }, [modalConfig]);
 
@@ -43,8 +43,8 @@ function ActionModal({ modalConfig, onApply, onCancel, isLoading }) {
       onApply('resize', { width: w, height: h });
     } else if (modalConfig.id === 'rotate') {
       onApply('rotate', { degree: parseInt(values.degree, 10) });
-    } else if (['gaussian_blur', 'median_filter'].includes(modalConfig.id)) {
-      onApply(modalConfig.id, { kernel: parseInt(values.kernel, 10) });
+    } else if (['gaussian_blur', 'median_filter', 'smoothing'].includes(modalConfig.id)) {
+      onApply(modalConfig.id, { kernelSize: parseInt(values.kernelSize, 10) });
     } else if (modalConfig.id === 'noise_removal') {
       onApply('noise_removal', {});
     }
@@ -91,6 +91,7 @@ function ActionModal({ modalConfig, onApply, onCancel, isLoading }) {
         );
       case 'gaussian_blur':
       case 'median_filter':
+      case 'smoothing':
         return (
           <div className="control-group">
             <div className="control-label">
@@ -98,13 +99,13 @@ function ActionModal({ modalConfig, onApply, onCancel, isLoading }) {
               <input 
                 type="number" 
                 className="value-input" 
-                value={values.kernel || 3} 
-                onChange={(e) => setValues({...values, kernel: e.target.value})} 
+                value={values.kernelSize || 3} 
+                onChange={(e) => setValues({...values, kernelSize: e.target.value})} 
               />
             </div>
             <input type="range" className="range-slider" min="3" max="15" step="2" autoFocus
-              value={values.kernel || 3} 
-              onChange={(e) => setValues({...values, kernel: e.target.value})} 
+              value={values.kernelSize || 3} 
+              onChange={(e) => setValues({...values, kernelSize: e.target.value})} 
             />
           </div>
         );
