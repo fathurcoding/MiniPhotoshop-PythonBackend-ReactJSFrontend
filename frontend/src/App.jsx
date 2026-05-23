@@ -43,9 +43,16 @@ function App() {
     
     // Auto-fetch original histogram
     try {
-      const data = await api.getHistogram(file);
-      setHistogramOriginal(data);
-      setHistogramCurrent(data);
+      const blob = await api.getHistogram(file);
+      const url = URL.createObjectURL(blob);
+      setHistogramOriginal(prev => {
+        if (prev) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setHistogramCurrent(prev => {
+        if (prev) URL.revokeObjectURL(prev);
+        return url;
+      });
     } catch (err) {
       console.error("Failed to load histogram", err);
     }
@@ -53,8 +60,12 @@ function App() {
 
   const fetchHistogram = async (blob) => {
     try {
-      const data = await api.getHistogram(blob);
-      setHistogramCurrent(data);
+      const histBlob = await api.getHistogram(blob);
+      const url = URL.createObjectURL(histBlob);
+      setHistogramCurrent(prev => {
+        if (prev && prev !== histogramOriginal) URL.revokeObjectURL(prev);
+        return url;
+      });
     } catch (err) {
       console.error(err);
     }
@@ -255,16 +266,19 @@ function App() {
         // --- 3. Geometric Transform ---
         case 'resize': 
           const resizeRes = await api.applyResize(currentImage, params); 
-          resultBlob = resizeRes.blob; shiftX = resizeRes.shiftX; shiftY = resizeRes.shiftY;
+          resultBlob = resizeRes.blob; 
+          shiftX = -globalShift.x; shiftY = -globalShift.y;
           break;
         case 'rotate': 
           const rotRes = await api.applyRotate(currentImage, params); 
-          resultBlob = rotRes.blob; shiftX = rotRes.shiftX; shiftY = rotRes.shiftY;
+          resultBlob = rotRes.blob; 
+          shiftX = -globalShift.x; shiftY = -globalShift.y;
           break;
         case 'flip': resultBlob = await api.applyFlip(currentImage, params); break;
         case 'crop': 
           const cropRes = await api.applyCrop(currentImage, params);
-          resultBlob = cropRes.blob; shiftX = cropRes.shiftX; shiftY = cropRes.shiftY;
+          resultBlob = cropRes.blob; 
+          shiftX = -globalShift.x; shiftY = -globalShift.y;
           break;
         case 'translate': 
           const transRes = await api.applyTranslate(currentImage, params);

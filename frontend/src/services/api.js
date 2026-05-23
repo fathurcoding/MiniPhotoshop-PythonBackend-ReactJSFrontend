@@ -145,7 +145,7 @@ export const applyColorAdjustment = async (file, hueShift, saturationScale) => {
 export const getHistogram = async (file, mode = "grayscale") => {
   const formData = new FormData();
   formData.append('file', file);
-  const res = await axios.post(`${BASE_URL}/analysis/histogram?mode=${mode}`, formData);
+  const res = await axios.post(`${BASE_URL}/analysis/histogram?mode=${mode}`, formData, { responseType: 'blob' });
   return res.data;
 };
 

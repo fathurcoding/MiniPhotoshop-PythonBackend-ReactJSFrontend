@@ -42,8 +42,8 @@ function RightPanel({ histogramOriginal, histogramCurrent }) {
         Analysis
       </div>
       
-      <div style={{ flex: 1, padding: '16px' }}>
-        <HistogramPanel histogramData={histogramCurrent || histogramOriginal} />
+      <div style={{ flex: 1, padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
+        <HistogramPanel original={histogramOriginal} current={histogramCurrent} />
       </div>
     </div>
   );

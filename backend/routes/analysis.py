@@ -26,7 +26,17 @@ def process_color_image(file_bytes, func, **kwargs):
 
 @router.post("/histogram")
 async def calculate_histogram(file: UploadFile = File(...)):
-    return {"message": "Histogram calculated (placeholder)"}
+    file_bytes = await file.read()
+    nparr = np.frombuffer(file_bytes, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)
+    if img is None:
+        return Response(status_code=400, content="Invalid image format")
+        
+    png_bytes = histogram.apply(img)
+    if png_bytes is None:
+        return Response(status_code=500, content="Failed to generate histogram")
+        
+    return Response(content=png_bytes, media_type="image/png")
 
 @router.post("/grayscale")
 async def apply_grayscale(file: UploadFile = File(...)):

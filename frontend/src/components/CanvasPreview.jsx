@@ -16,7 +16,6 @@ function CanvasPreview({
   const [originalImgUrl, setOriginalImgUrl] = useState(null);
   const [showOriginal, setShowOriginal] = useState(false);
   const [imageSize, setImageSize] = useState({ w: 0, h: 0 });
-  const [canvasRect, setCanvasRect] = useState({ w: 0, h: 0 });
   const imgRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -87,7 +86,6 @@ function CanvasPreview({
   useEffect(() => {
     if (!originalImage) {
       setOriginalImgUrl(null);
-      setCanvasRect({ w: 0, h: 0 });
       return;
     }
     const url = URL.createObjectURL(originalImage);
@@ -98,7 +96,6 @@ function CanvasPreview({
     
     const img = new Image();
     img.onload = () => {
-      setCanvasRect({ w: img.naturalWidth, h: img.naturalHeight });
       // Calculate base scale so the original image fits nicely in the window
       const container = containerRef.current;
       if (container) {
@@ -208,9 +205,9 @@ function CanvasPreview({
 
   // Determine if we need scrollbars
   const getOverflowState = () => {
-    if (!containerRef.current || canvasRect.w === 0) return { x: 'hidden', y: 'hidden' };
-    const scaledW = canvasRect.w * baseScale * viewState.scale;
-    const scaledH = canvasRect.h * baseScale * viewState.scale;
+    if (!containerRef.current || imageSize.w === 0) return { x: 'hidden', y: 'hidden' };
+    const scaledW = imageSize.w * baseScale * viewState.scale;
+    const scaledH = imageSize.h * baseScale * viewState.scale;
     const cw = containerRef.current.clientWidth;
     const ch = containerRef.current.clientHeight;
     return {
@@ -223,10 +220,10 @@ function CanvasPreview({
 
   // Handle Centering on Image Load
   useEffect(() => {
-    if (canvasRect.w > 0 && containerRef.current) {
+    if (imageSize.w > 0 && containerRef.current) {
       const container = containerRef.current;
-      const scaledW = canvasRect.w * baseScale * viewState.scale;
-      const scaledH = canvasRect.h * baseScale * viewState.scale;
+      const scaledW = imageSize.w * baseScale * viewState.scale;
+      const scaledH = imageSize.h * baseScale * viewState.scale;
       
       const shouldCenterHorizontally = scaledW <= container.clientWidth;
       const shouldCenterVertically = scaledH <= container.clientHeight;
@@ -238,7 +235,7 @@ function CanvasPreview({
         container.scrollTop = PAN_PADDING - (container.clientHeight - scaledH) / 2;
       }
     }
-  }, [canvasRect.w, originalImage]);
+  }, [imageSize.w, originalImage]);
 
   const handlePointerDown = (e) => {
     if (activeTool !== 'translate' && activeTool !== 'crop' && activeTool !== 'pan') return;
@@ -574,21 +571,20 @@ function CanvasPreview({
           }}>
             {/* Sizer matching the scaled image dimensions */}
             <div className="scaled-sizer" style={{
-              width: canvasRect.w > 0 ? (canvasRect.w * baseScale * viewState.scale) : 0,
-              height: canvasRect.h > 0 ? (canvasRect.h * baseScale * viewState.scale) : 0,
+              width: imageSize.w > 0 ? (imageSize.w * baseScale * viewState.scale) : 0,
+              height: imageSize.h > 0 ? (imageSize.h * baseScale * viewState.scale) : 0,
               position: 'relative',
               backgroundColor: '#222',
               boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
             }}>
               {/* Canvas Wrapper - Anchored to 0,0 for perfect math */}
               <div 
-                className="canvas-wrapper" 
                 style={{
                   position: 'absolute',
                   left: 0,
                   top: 0,
-                  width: canvasRect.w > 0 ? `${canvasRect.w}px` : 'auto',
-                  height: canvasRect.h > 0 ? `${canvasRect.h}px` : 'auto',
+                  width: imageSize.w > 0 ? `${imageSize.w}px` : 'auto',
+                  height: imageSize.h > 0 ? `${imageSize.h}px` : 'auto',
                   overflow: 'visible', // Allow handles to be visible outside
                   transform: `scale(${viewState.scale * baseScale})`,
                   transformOrigin: '0 0',
