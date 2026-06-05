@@ -263,6 +263,9 @@ function App() {
         case 'segment_edge': resultBlob = await api.applySegmentEdge(currentImage); break;
         case 'segment_region': resultBlob = await api.applySegmentRegion(currentImage, params); break;
         
+        // --- 11. Object Recognition (CNN) ---
+        case 'recognize_object': resultBlob = await api.recognizeObject(currentImage, params?.modelType || 'scratch'); break;
+        
         // --- 3. Geometric Transform ---
         case 'resize': 
           const resizeRes = await api.applyResize(currentImage, params); 

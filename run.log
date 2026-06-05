@@ -1,67 +1,98 @@
-(venv) PS D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop> uvicorn backend.main:app --reload --port 8000
-INFO:     Will watch for changes in these directories: ['D:\\FATHUR\\Documents\\Perkuliahan\\Kelas PNJ\\Semester 4\\Pengolahan Citra Digital\\Project\\MiniPhotoshop']
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [28836] using StatReload
-INFO:     Started server process [1396]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     127.0.0.1:59458 - "POST /segmentation/region HTTP/1.1" 500 Internal Server Error
-ERROR:    Exception in ASGI application
-Traceback (most recent call last):
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 415, in run_asgi
-    result = await app(  # type: ignore[func-returns-value]
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 56, in __call__   
-    return await self.app(scope, receive, send)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
-    await super().__call__(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\applications.py", line 90, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__       
-    raise exc
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__       
-    await self.app(scope, receive, _send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
-    await self.simple_response(scope, receive, send, request_headers=headers)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response  
-    await self.app(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__    
-    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app    
-    raise exc
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app    
-    await app(scope, receive, sender)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__  
-    await self.app(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\routing.py", line 680, in app
-    await route.handle(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\routing.py", line 276, in handle
-    await self.app(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\fastapi\routing.py", line 134, in app
-    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app    
-    raise exc
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app    
-    await app(scope, receive, sender)
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\fastapi\routing.py", line 120, in app
-    response = await f(request)
-               ^^^^^^^^^^^^^^^^
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\fastapi\routing.py", line 674, in app
-    raw_response = await run_endpoint_function(
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\venv\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function      
-    return await dependant.call(**values)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\backend\routes\segmentation.py", line 39, in apply_segment_region
-    return process_image(file_bytes, region_based.apply, k=k)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\backend\routes\segmentation.py", line 15, in process_image
-    result_img = func(img, **kwargs)
-                 ^^^^^^^^^^^^^^^^^^^
-  File "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\backend\features\segmentation\region_based.py", line 21, in apply
-    pixel_values = image.reshape((-1, 3))
-                   ^^^^^^^^^^^^^^^^^^^^^^
-ValueError: cannot reshape array of size 13664000 into shape (3)
+(venv) PS D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop> python "D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\backend\features\recognition\train_cnn.py"
+Bobot model tidak ditemukan, menggunakan model acak (belum di-training).
+Menggunakan device: cuda
+Mempersiapkan dataset Caltech-101 (Membaca file manual)...
+Berhasil menyimpan 101 daftar kategori ke D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\backend\features\recognition\caltech101_classes.json
+Mulai proses training...
+[1,   100] Loss: 3.919 | Acc: 20.25%
+[1,   200] Loss: 3.198 | Acc: 26.22%
+[1,   300] Loss: 2.780 | Acc: 30.88%
+[1,   400] Loss: 2.701 | Acc: 33.64%
+[1,   500] Loss: 2.498 | Acc: 35.83%
+Epoch 1 Selesai. Total Accuracy: 36.94%
+[2,   100] Loss: 1.906 | Acc: 54.69%
+[2,   200] Loss: 1.858 | Acc: 56.12%
+[2,   300] Loss: 1.654 | Acc: 57.44%
+[2,   400] Loss: 1.518 | Acc: 58.86%
+[2,   500] Loss: 1.486 | Acc: 59.69%
+Epoch 2 Selesai. Total Accuracy: 60.14%
+[3,   100] Loss: 0.677 | Acc: 82.50%
+[3,   200] Loss: 0.673 | Acc: 82.06%
+[3,   300] Loss: 0.590 | Acc: 82.90%
+[3,   400] Loss: 0.645 | Acc: 82.86%
+[3,   500] Loss: 0.650 | Acc: 82.94%
+Epoch 3 Selesai. Total Accuracy: 82.85%
+[4,   100] Loss: 0.135 | Acc: 97.19%
+[4,   200] Loss: 0.106 | Acc: 97.28%
+[4,   300] Loss: 0.123 | Acc: 96.94%
+[4,   400] Loss: 0.201 | Acc: 96.67%
+[4,   500] Loss: 0.146 | Acc: 96.64%
+Epoch 4 Selesai. Total Accuracy: 96.54%
+[5,   100] Loss: 0.079 | Acc: 98.31%
+[5,   200] Loss: 0.050 | Acc: 98.31%
+[5,   300] Loss: 0.083 | Acc: 98.38%
+[5,   400] Loss: 0.137 | Acc: 98.05%
+[5,   500] Loss: 0.138 | Acc: 97.75%
+Epoch 5 Selesai. Total Accuracy: 97.74%
+[6,   100] Loss: 0.052 | Acc: 99.12%
+[6,   200] Loss: 0.026 | Acc: 99.28%
+[6,   300] Loss: 0.051 | Acc: 99.06%
+[6,   400] Loss: 0.041 | Acc: 98.95%
+[6,   500] Loss: 0.062 | Acc: 98.83%
+Epoch 6 Selesai. Total Accuracy: 98.77%
+[7,   100] Loss: 0.040 | Acc: 98.81%
+[7,   200] Loss: 0.040 | Acc: 98.75%
+[7,   300] Loss: 0.083 | Acc: 98.62%
+[7,   400] Loss: 0.082 | Acc: 98.44%
+[7,   500] Loss: 0.096 | Acc: 98.31%
+Epoch 7 Selesai. Total Accuracy: 98.35%
+[8,   100] Loss: 0.034 | Acc: 99.06%
+[8,   200] Loss: 0.065 | Acc: 98.81%
+[8,   300] Loss: 0.130 | Acc: 98.12%
+[8,   400] Loss: 0.111 | Acc: 97.84%
+[8,   500] Loss: 0.071 | Acc: 97.91%
+Epoch 8 Selesai. Total Accuracy: 98.03%
+[9,   100] Loss: 0.024 | Acc: 99.50%
+[9,   200] Loss: 0.031 | Acc: 99.28%
+[9,   300] Loss: 0.132 | Acc: 98.69%
+[9,   400] Loss: 0.103 | Acc: 98.47%
+[9,   500] Loss: 0.101 | Acc: 98.34%
+Epoch 9 Selesai. Total Accuracy: 98.36%
+[10,   100] Loss: 0.077 | Acc: 98.12%
+[10,   200] Loss: 0.042 | Acc: 98.59%
+[10,   300] Loss: 0.051 | Acc: 98.83%
+[10,   400] Loss: 0.038 | Acc: 98.89%
+[10,   500] Loss: 0.048 | Acc: 98.90%
+Epoch 10 Selesai. Total Accuracy: 98.92%
+[11,   100] Loss: 0.008 | Acc: 99.75%
+[11,   200] Loss: 0.024 | Acc: 99.72%
+[11,   300] Loss: 0.022 | Acc: 99.67%
+[11,   400] Loss: 0.017 | Acc: 99.69%
+[11,   500] Loss: 0.042 | Acc: 99.55%
+Epoch 11 Selesai. Total Accuracy: 99.48%
+[12,   100] Loss: 0.034 | Acc: 98.94%
+[12,   200] Loss: 0.083 | Acc: 98.59%
+[12,   300] Loss: 0.086 | Acc: 98.31%
+[12,   400] Loss: 0.047 | Acc: 98.50%
+[12,   500] Loss: 0.108 | Acc: 98.42%
+Epoch 12 Selesai. Total Accuracy: 98.34%
+[13,   100] Loss: 0.027 | Acc: 99.38%
+[13,   200] Loss: 0.014 | Acc: 99.53%
+[13,   300] Loss: 0.044 | Acc: 99.38%
+[13,   400] Loss: 0.025 | Acc: 99.33%
+[13,   500] Loss: 0.041 | Acc: 99.25%
+Epoch 13 Selesai. Total Accuracy: 99.24%
+[14,   100] Loss: 0.022 | Acc: 99.38%
+[14,   200] Loss: 0.016 | Acc: 99.50%
+[14,   300] Loss: 0.042 | Acc: 99.56%
+[14,   400] Loss: 0.036 | Acc: 99.44%
+[14,   500] Loss: 0.039 | Acc: 99.35%
+Epoch 14 Selesai. Total Accuracy: 99.31%
+[15,   100] Loss: 0.056 | Acc: 98.56%
+[15,   200] Loss: 0.069 | Acc: 98.91%
+[15,   300] Loss: 0.027 | Acc: 98.96%
+[15,   400] Loss: 0.020 | Acc: 99.12%
+[15,   500] Loss: 0.097 | Acc: 98.88%
+Epoch 15 Selesai. Total Accuracy: 98.79%
+Training Selesai!
+Bobot model berhasil disimpan ke: D:\FATHUR\Documents\Perkuliahan\Kelas PNJ\Semester 4\Pengolahan Citra Digital\Project\MiniPhotoshop\backend\models\cnn_weights.pth

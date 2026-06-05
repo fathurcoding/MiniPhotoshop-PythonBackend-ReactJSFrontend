@@ -72,6 +72,7 @@ function Sidebar({
   const [medianKernel, setMedianKernel] = useState(5);
   const [hueShift, setHueShift] = useState(0);
   const [saturationScale, setSaturationScale] = useState(1.0);
+  const [mlModelType, setMlModelType] = useState('scratch');
 
   // Enhancement State bawaan
   const [threshold, setThreshold] = useState(128);
@@ -445,7 +446,29 @@ function Sidebar({
         </div>
       </Accordion>
 
-      {/* 7. Export & Compression */}
+      {/* 8. FITUR BARU KALIAN: OBJECT RECOGNITION (CNN) */}
+      <Accordion title="Machine Learning" icon={<ShieldAlert size={14}/>}>
+        <div style={{ marginBottom: '0.75rem' }}>
+          <p style={{ fontSize: '11px', color: 'var(--text-color)', opacity: 0.8, marginBottom: '0.5rem', lineHeight: 1.4 }}>
+            Pilih model AI yang ingin digunakan untuk deteksi objek.
+          </p>
+          <div className="control-group" style={{ marginBottom: '0.75rem' }}>
+            <label>Model Type</label>
+            <select className="select-input" value={mlModelType} onChange={e => setMlModelType(e.target.value)} disabled={!hasImage}>
+              <option value="scratch">CNN dari Nol (Caltech-101)</option>
+              <option value="pretrained">Pretrained (MobileNet-SSD)</option>
+            </select>
+          </div>
+          <button 
+            className="primary" style={{ width: '100%', backgroundColor: '#0d47a1', borderColor: '#0d47a1' }}
+            onClick={() => onAction('recognize_object', { modelType: mlModelType })} disabled={!hasImage}
+          >
+            Detect Objects (CNN)
+          </button>
+        </div>
+      </Accordion>
+
+      {/* 9. Export & Compression */}
       <Accordion title="Export" icon={<Save size={14}/>}>
         <button className="primary" onClick={onExport} disabled={!hasImage} style={{ marginTop: '0.5rem', width: '100%' }}>
           <Upload size={14} /> Download / Export

@@ -261,3 +261,14 @@ export const applySegmentRegion = async (file, params) => {
   const res = await axios.post(`${BASE_URL}/segmentation/region`, formData, { responseType: 'blob' });
   return res.data;
 };
+
+// --- 11. Object Recognition (CNN) ---
+
+export const recognizeObject = async (file, modelType = "scratch") => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('model_type', modelType);
+  // Endpoint ini mengembalikan blob gambar yang sudah digambar bounding box / label klasifikasinya
+  const res = await axios.post(`${BASE_URL}/recognition/detect`, formData, { responseType: 'blob' });
+  return res.data;
+};

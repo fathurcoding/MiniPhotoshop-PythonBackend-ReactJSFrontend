@@ -21,3 +21,9 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Large Datasets and Models
+backend/dataset_caltech101/
+data/
+backend/models/cnn_weights.pth
+run.log
