@@ -2,10 +2,11 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { 
   ChevronDown, ChevronRight, RotateCcw, Upload,
   Sun, Contrast, Palette, Grid, Focus, Scissors, Save,
-  Check, X, Eye, EyeOff, ShieldAlert
+  Check, X, Eye, EyeOff, ShieldAlert, Info
 } from 'lucide-react';
+import InfoModal from './InfoModal';
 
-function Accordion({ title, icon, defaultOpen = false, children }) {
+function Accordion({ title, icon, defaultOpen = false, onInfoClick, children }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
     <div className="accordion">
@@ -13,7 +14,19 @@ function Accordion({ title, icon, defaultOpen = false, children }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {icon} {title}
         </div>
-        {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {onInfoClick && (
+            <button 
+               className="icon-btn" 
+               style={{ padding: '2px', opacity: 0.7, margin: 0, border: 'none', background: 'transparent' }}
+               onClick={(e) => { e.stopPropagation(); onInfoClick(); }}
+               title={`Info tentang ${title}`}
+            >
+              <Info size={14} />
+            </button>
+          )}
+          {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        </div>
       </div>
       {isOpen && <div className="accordion-content">{children}</div>}
     </div>
@@ -58,6 +71,8 @@ function Sidebar({
       window.removeEventListener("mouseup", stopResizing);
     };
   }, [resize, stopResizing]);
+
+  const [infoKey, setInfoKey] = useState(null);
 
   // Geometric State
   const [resizeW, setResizeW] = useState(800);
@@ -128,8 +143,8 @@ function Sidebar({
         </button>
       </div>
 
-      {/* 2. Image Enhancement (Terintegrasi) */}
-      <Accordion title="Enhancement" icon={<Sun size={14}/>} defaultOpen={true}>
+      {/* 2. ENHANCEMENT */}
+      <Accordion title="Enhancement" icon={<Sun size={14}/>} defaultOpen={true} onInfoClick={() => setInfoKey('enhancement')}>
         <div className="control-group">
           <div className="control-label">
             <span>Brightness</span> 
@@ -211,9 +226,10 @@ function Sidebar({
         </div>
       </Accordion>
 
-      {/* 3. Edge & Binary */}
-      <Accordion title="Edge & Binary" icon={<Contrast size={14}/>}>
-        {/* Thresholding */}
+      {/* 3. EDGE & BINARY */}
+      <Accordion title="Edge & Binary" icon={<Grid size={14}/>} onInfoClick={() => setInfoKey('edge_binary')}>
+        
+        {/* Tresholding */}
         <div className="control-group" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
           <div className="control-label">
             <span>Thresholding</span>
@@ -324,8 +340,8 @@ function Sidebar({
         </div>
       </Accordion>
 
-      {/* 4. FITUR BARU KALIAN: IMAGE RESTORATION (MENU AKORDION BARU) */}
-      <Accordion title="Restoration" icon={<Focus size={14}/>}>
+      {/* 4. RESTORATION */}
+      <Accordion title="Restoration" icon={<Focus size={14}/>} onInfoClick={() => setInfoKey('restoration')}>
         {/* Gaussian Blur */}
         <div className="control-group" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
           <div className="control-label">
@@ -379,8 +395,8 @@ function Sidebar({
         </button>
       </Accordion>
 
-      {/* 5. Color Processing */}
-      <Accordion title="Color" icon={<Palette size={14}/>}>
+      {/* 5. COLOR */}
+      <Accordion title="Color" icon={<Palette size={14}/>} onInfoClick={() => setInfoKey('color')}>
         <button onClick={() => onAction('grayscale')} disabled={!hasImage} style={{ width: '100%' }}>To Grayscale</button>
         <div className="button-group-row" style={{ marginTop: '0.5rem', marginBottom: '0.75rem' }}>
           <button onClick={() => onAction('channel', { c: 'r' })} disabled={!hasImage} style={{ backgroundColor: '#b71c1c', color: '#fff', border: 'none' }}>Red</button>
@@ -414,8 +430,8 @@ function Sidebar({
         </div>
       </Accordion>
 
-      {/* 6. Segmentation */}
-      <Accordion title="Segmentation" icon={<Grid size={14}/>}>
+      {/* 6. SEGMENTATION */}
+      <Accordion title="Segmentation" icon={<Scissors size={14}/>} onInfoClick={() => setInfoKey('segmentation')}>
         <div className="control-group" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
           <button className="primary-sm" style={{ width: '100%', marginBottom: '0.5rem' }} onClick={() => onAction('segment_threshold')} disabled={!hasImage}>
             Threshold Based (Otsu Masking)
@@ -447,7 +463,7 @@ function Sidebar({
       </Accordion>
 
       {/* 8. FITUR BARU KALIAN: OBJECT RECOGNITION (CNN) */}
-      <Accordion title="Machine Learning" icon={<ShieldAlert size={14}/>}>
+      <Accordion title="Machine Learning" icon={<ShieldAlert size={14}/>} onInfoClick={() => setInfoKey('machine_learning')}>
         <div style={{ marginBottom: '0.75rem' }}>
           <p style={{ fontSize: '11px', color: 'var(--text-color)', opacity: 0.8, marginBottom: '0.5rem', lineHeight: 1.4 }}>
             Pilih model AI yang ingin digunakan untuk deteksi objek.
@@ -475,6 +491,7 @@ function Sidebar({
         </button>
       </Accordion>
 
+      {infoKey && <InfoModal infoKey={infoKey} onClose={() => setInfoKey(null)} />}
     </div>
   );
 }
